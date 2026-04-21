@@ -12,7 +12,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import { Button } from './Button';
+import { logout, getSession } from '../lib/auth';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -22,6 +22,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const session = getSession();
 
   const menuItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
@@ -34,7 +35,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   ];
 
   const handleLogout = () => {
-    navigate('/');
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -57,7 +59,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
           <div className="flex items-center space-x-4">
             <a
-              href="/cardapio/demo"
+              href={`/cardapio/${session?.slug || 'demo'}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-[#64748B] hover:text-[#DC2626] transition-colors"
