@@ -36,14 +36,25 @@ export function NovoPrato() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, image: file });
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setErrors((prev) => ({ ...prev, image: 'Selecione um arquivo de imagem válido.' }));
+      return;
     }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, image: 'A imagem deve ter no máximo 5MB.' }));
+      return;
+    }
+
+    setErrors((prev) => ({ ...prev, image: '' }));
+    setFormData({ ...formData, image: file });
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -52,7 +63,14 @@ export function NovoPrato() {
 
     if (!formData.name) newErrors.name = 'Nome do prato é obrigatório';
     if (!formData.category) newErrors.category = 'Categoria é obrigatória';
-    if (!formData.price) newErrors.price = 'Preço é obrigatório';
+    if (!formData.price) {
+      newErrors.price = 'Preço é obrigatório';
+    } else {
+      const normalizedPrice = Number(formData.price.replace(',', '.'));
+      if (Number.isNaN(normalizedPrice) || normalizedPrice <= 0) {
+        newErrors.price = 'Preço deve ser um número maior que zero';
+      }
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -122,6 +140,9 @@ export function NovoPrato() {
                         <p className="text-sm text-[#64748B] mt-2">
                           PNG, JPG ou WEBP até 5MB
                         </p>
+                        {errors.image && (
+                          <p className="text-sm text-[#DC2626] mt-2">{errors.image}</p>
+                        )}
                       </div>
                     </div>
                   </div>
