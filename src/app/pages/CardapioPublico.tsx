@@ -144,6 +144,10 @@ export function CardapioPublico({ isPreview }: CardapioPublicoProps) {
     setSelectedCategory(categories[0]?.id || 1);
   }, [safeSlug]);
 
+  const instagramUrl = `https://instagram.com/${restaurant.instagram.replace('@', '')}`;
+  const facebookUrl = `https://facebook.com/${restaurant.facebook}`;
+  const websiteUrl = restaurant.website.startsWith('http') ? restaurant.website : `https://${restaurant.website}`;
+
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <div
@@ -185,15 +189,15 @@ export function CardapioPublico({ isPreview }: CardapioPublicoProps) {
           </div>
 
           <div className="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-[#E2E8F0]">
-            <a href="#" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
+            <a href={instagramUrl} target="_blank" rel="noreferrer" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
               <Instagram className="w-5 h-5" />
               <span className="text-sm">{restaurant.instagram}</span>
             </a>
-            <a href="#" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
+            <a href={facebookUrl} target="_blank" rel="noreferrer" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
               <Facebook className="w-5 h-5" />
               <span className="text-sm">{restaurant.facebook}</span>
             </a>
-            <a href="#" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
+            <a href={websiteUrl} target="_blank" rel="noreferrer" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
               <Globe className="w-5 h-5" />
               <span className="text-sm">{restaurant.website}</span>
             </a>

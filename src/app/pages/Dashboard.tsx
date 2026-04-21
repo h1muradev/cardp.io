@@ -144,8 +144,8 @@ export function Dashboard() {
               </Link>
             </div>
             <div className="space-y-4">
-              {recentDishes.map((dish, index) => (
-                <div key={index} className="flex items-start justify-between pb-4 border-b border-[#E2E8F0] last:border-0 last:pb-0">
+              {recentDishes.map((dish) => (
+                <div key={dish.name} className="flex items-start justify-between pb-4 border-b border-[#E2E8F0] last:border-0 last:pb-0">
                   <div className="flex-1">
                     <p className="font-medium text-[#111827]">{dish.name}</p>
                     <p className="text-sm text-[#64748B]">{dish.category}</p>
@@ -164,8 +164,8 @@ export function Dashboard() {
               Checklist de publicação
             </h2>
             <div className="space-y-3">
-              {checklist.map((item, index) => (
-                <label key={index} className="flex items-center space-x-3 cursor-pointer group">
+              {checklist.map((item) => (
+                <label key={item.label} className="flex items-center space-x-3 cursor-pointer group">
                   <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                     item.done
                       ? 'bg-[#16A34A] border-[#16A34A]'
@@ -202,8 +202,8 @@ export function Dashboard() {
               </Link>
             </div>
             <div className="space-y-3">
-              {categories.map((category, index) => (
-                <div key={index} className="flex items-center justify-between">
+              {categories.map((category) => (
+                <div key={category.name} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <FolderTree className="w-5 h-5 text-[#64748B]" />
                     <div>

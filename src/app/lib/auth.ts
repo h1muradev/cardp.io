@@ -27,7 +27,20 @@ const slugify = (value: string) =>
 
 const getUsers = (): AuthUser[] => {
   const raw = localStorage.getItem(USERS_KEY);
-  if (!raw) return [];
+
+  if (!raw) {
+    const seededUsers: AuthUser[] = [
+      {
+        restaurantName: 'Restaurante Don Giovanni',
+        email: 'demo@cardap.io',
+        password: 'Demo@1234',
+        slug: 'demo'
+      }
+    ];
+
+    saveUsers(seededUsers);
+    return seededUsers;
+  }
 
   try {
     return JSON.parse(raw) as AuthUser[];
@@ -65,7 +78,7 @@ const createSession = (user: AuthUser): AuthSession => {
     email: user.email,
     restaurantName: user.restaurantName,
     slug: user.slug,
-    token: crypto.randomUUID()
+    token: typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`
   };
   localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   return session;

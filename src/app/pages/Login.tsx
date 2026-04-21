@@ -67,6 +67,12 @@ export function Login() {
         </div>
 
         <div className="bg-white rounded-xl shadow-lg border border-[#E2E8F0] p-8">
+
+          <div className="mt-4 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] p-3 text-xs text-[#64748B]">
+            <p className="font-medium text-[#111827] mb-1">Acesso de demonstração</p>
+            <p>E-mail: demo@cardap.io</p>
+            <p>Senha: Demo@1234</p>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-5">
             <Input
               label="E-mail"
