@@ -1,7 +1,7 @@
 import { DashboardLayout } from '../components/DashboardLayout';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import QRCode from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { Download, Copy, ExternalLink, CheckCircle } from 'lucide-react';
 import { useRef, useState } from 'react';
 
@@ -46,7 +46,7 @@ export function QRCodePage() {
             </h2>
             <div className="flex flex-col items-center">
               <div ref={qrWrapperRef} className="bg-white p-8 rounded-xl border-2 border-[#E2E8F0] mb-6">
-                <QRCode
+                <QRCodeCanvas
                   value={menuUrl}
                   size={280}
                   level="H"
