@@ -4,11 +4,13 @@ import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { PasswordStrength } from '../components/PasswordStrength';
 import { Eye, EyeOff } from 'lucide-react';
+import { registerUser } from '../lib/auth';
 
 export function Cadastro() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [formData, setFormData] = useState({
     restaurantName: '',
     email: '',
@@ -61,8 +63,19 @@ export function Cadastro() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
+    setSubmitError('');
+
+    if (!validateForm()) return;
+
+    try {
+      registerUser({
+        restaurantName: formData.restaurantName,
+        email: formData.email,
+        password: formData.password
+      });
       navigate('/dashboard');
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Erro ao criar conta.');
     }
   };
 
@@ -141,6 +154,10 @@ export function Cadastro() {
               </button>
             </div>
 
+            {submitError && (
+              <p className="text-sm text-[#DC2626]">{submitError}</p>
+            )}
+
             <Button type="submit" variant="primary" size="lg" fullWidth>
               Criar conta grátis
             </Button>
@@ -155,17 +172,6 @@ export function Cadastro() {
             </p>
           </div>
         </div>
-
-        <p className="text-center text-sm text-[#64748B] mt-6">
-          Ao criar sua conta, você concorda com nossos{' '}
-          <a href="#" className="text-[#DC2626] hover:underline">
-            Termos de Uso
-          </a>{' '}
-          e{' '}
-          <a href="#" className="text-[#DC2626] hover:underline">
-            Política de Privacidade
-          </a>
-        </p>
       </div>
     </div>
   );

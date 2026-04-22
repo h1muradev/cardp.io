@@ -1,13 +1,14 @@
 import { DashboardLayout } from '../components/DashboardLayout';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import QRCode from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { Download, Copy, ExternalLink, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export function QRCodePage() {
   const [copied, setCopied] = useState(false);
   const menuUrl = 'https://cardapio.dongiovanni.com.br';
+  const qrWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(menuUrl);
@@ -16,7 +17,7 @@ export function QRCodePage() {
   };
 
   const handleDownloadQR = () => {
-    const canvas = document.querySelector('canvas');
+    const canvas = qrWrapperRef.current?.querySelector('canvas');
     if (canvas) {
       const url = canvas.toDataURL('image/png');
       const link = document.createElement('a');
@@ -44,8 +45,8 @@ export function QRCodePage() {
               QR Code
             </h2>
             <div className="flex flex-col items-center">
-              <div className="bg-white p-8 rounded-xl border-2 border-[#E2E8F0] mb-6">
-                <QRCode
+              <div ref={qrWrapperRef} className="bg-white p-8 rounded-xl border-2 border-[#E2E8F0] mb-6">
+                <QRCodeCanvas
                   value={menuUrl}
                   size={280}
                   level="H"

@@ -1,30 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DashboardLayout } from '../components/DashboardLayout';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Textarea } from '../components/Textarea';
-import { Save, MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { Save, MapPin, Phone, Clock, CheckCircle } from 'lucide-react';
+
+const RESTAURANT_STORAGE_KEY = 'cardapio:restaurant-data';
+
+const defaultData = {
+  name: 'Restaurante Don Giovanni',
+  description: 'Cozinha italiana tradicional com toques contemporâneos',
+  phone: '(11) 3456-7890',
+  email: 'contato@dongiovanni.com.br',
+  address: 'Rua dos Pinheiros, 123',
+  neighborhood: 'Pinheiros',
+  city: 'São Paulo',
+  state: 'SP',
+  zipCode: '05422-010',
+  instagram: '@dongiovanni',
+  facebook: 'dongiovanni',
+  website: 'www.dongiovanni.com.br',
+  openingHours: 'Ter-Dom: 12h-15h e 19h-23h'
+};
 
 export function DadosRestaurante() {
-  const [formData, setFormData] = useState({
-    name: 'Restaurante Don Giovanni',
-    description: 'Cozinha italiana tradicional com toques contemporâneos',
-    phone: '(11) 3456-7890',
-    email: 'contato@dongiovanni.com.br',
-    address: 'Rua dos Pinheiros, 123',
-    neighborhood: 'Pinheiros',
-    city: 'São Paulo',
-    state: 'SP',
-    zipCode: '05422-010',
-    instagram: '@dongiovanni',
-    facebook: 'dongiovanni',
-    website: 'www.dongiovanni.com.br',
-    openingHours: 'Ter-Dom: 12h-15h e 19h-23h'
-  });
+  const [formData, setFormData] = useState(defaultData);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const raw = localStorage.getItem(RESTAURANT_STORAGE_KEY);
+    if (!raw) return;
+
+    try {
+      setFormData({ ...defaultData, ...(JSON.parse(raw) as typeof defaultData) });
+    } catch {
+      localStorage.removeItem(RESTAURANT_STORAGE_KEY);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    localStorage.setItem(RESTAURANT_STORAGE_KEY, JSON.stringify(formData));
+    setSaved(true);
   };
 
   return (
@@ -184,6 +202,12 @@ export function DadosRestaurante() {
               />
             </div>
           </Card>
+
+          {saved && (
+            <p className="text-sm text-[#16A34A] flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" /> Dados salvos com sucesso.
+            </p>
+          )}
 
           <div className="flex items-center justify-end">
             <Button type="submit" variant="primary">
