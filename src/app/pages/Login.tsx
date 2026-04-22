@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { Eye, EyeOff } from 'lucide-react';
+import { loginUser } from '../lib/auth';
 
 export function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -32,8 +35,16 @@ export function Login() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      navigate('/dashboard');
+    setSubmitError('');
+
+    if (!validateForm()) return;
+
+    try {
+      loginUser(formData.email, formData.password);
+      const redirectPath = (location.state as { from?: string } | null)?.from || '/dashboard';
+      navigate(redirectPath);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Erro ao autenticar.');
     }
   };
 
@@ -56,6 +67,12 @@ export function Login() {
         </div>
 
         <div className="bg-white rounded-xl shadow-lg border border-[#E2E8F0] p-8">
+
+          <div className="mt-4 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] p-3 text-xs text-[#64748B]">
+            <p className="font-medium text-[#111827] mb-1">Acesso de demonstração</p>
+            <p>E-mail: demo@cardap.io</p>
+            <p>Senha: Demo@1234</p>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-5">
             <Input
               label="E-mail"
@@ -66,7 +83,7 @@ export function Login() {
               error={errors.email}
             />
 
-            <div>
+            <div className="relative">
               <Input
                 label="Senha"
                 type={showPassword ? 'text' : 'password'}
@@ -83,6 +100,10 @@ export function Login() {
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
+
+            {submitError && (
+              <p className="text-sm text-[#DC2626]">{submitError}</p>
+            )}
 
             <div className="flex items-center justify-between">
               <label className="flex items-center">
@@ -114,17 +135,6 @@ export function Login() {
             </p>
           </div>
         </div>
-
-        <p className="text-center text-sm text-[#64748B] mt-6">
-          Ao continuar, você concorda com nossos{' '}
-          <a href="#" className="text-[#DC2626] hover:underline">
-            Termos de Uso
-          </a>{' '}
-          e{' '}
-          <a href="#" className="text-[#DC2626] hover:underline">
-            Política de Privacidade
-          </a>
-        </p>
       </div>
     </div>
   );

@@ -149,10 +149,10 @@ export function LandingPage() {
                 title: 'Destaque de Pratos',
                 description: 'Marque pratos especiais e organize por ordem de exibição.'
               }
-            ].map((feature, index) => {
+            ].map((feature) => {
               const Icon = feature.icon;
               return (
-                <div key={index} className="flex flex-col items-start">
+                <div key={feature.title} className="flex flex-col items-start">
                   <div className="w-12 h-12 bg-[#FEE2E2] rounded-lg flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6 text-[#DC2626]" />
                   </div>
@@ -213,8 +213,8 @@ export function LandingPage() {
                 restaurant: 'Churrascaria Gaúcha',
                 text: 'Melhor investimento que fizemos. Economizamos muito com impressão de cardápios e tudo fica sempre atualizado.'
               }
-            ].map((testimonial, index) => (
-              <div key={index} className="bg-[#F8FAFC] rounded-xl p-6 border border-[#E2E8F0]">
+            ].map((testimonial) => (
+              <div key={testimonial.name} className="bg-[#F8FAFC] rounded-xl p-6 border border-[#E2E8F0]">
                 <div className="flex items-center mb-4">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star key={star} className="w-5 h-5 fill-[#F59E0B] text-[#F59E0B]" />
@@ -270,23 +270,23 @@ export function LandingPage() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><a href="#recursos" className="hover:text-white transition-colors">Recursos</a></li>
                 <li><a href="#demonstracao" className="hover:text-white transition-colors">Demonstração</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Preços</a></li>
+                <li><a href="#recursos" className="hover:text-white transition-colors">Preços</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-medium mb-4">Empresa</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Sobre</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#como-funciona" className="hover:text-white transition-colors">Sobre</a></li>
+                <li><a href="#demonstracao" className="hover:text-white transition-colors">Blog</a></li>
                 <li><a href="#contato" className="hover:text-white transition-colors">Contato</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-medium mb-4">Suporte</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Central de Ajuda</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Termos de Uso</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacidade</a></li>
+                <li><a href="#contato" className="hover:text-white transition-colors">Central de Ajuda</a></li>
+                <li><a href="/" className="hover:text-white transition-colors">Termos de Uso</a></li>
+                <li><a href="/" className="hover:text-white transition-colors">Privacidade</a></li>
               </ul>
             </div>
           </div>

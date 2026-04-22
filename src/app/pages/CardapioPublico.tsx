@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MapPin, Phone, Clock, Instagram, Facebook, Globe } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 
 interface CardapioPublicoProps {
   isPreview?: boolean;
@@ -23,17 +24,33 @@ interface Category {
 export function CardapioPublico({ isPreview }: CardapioPublicoProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>(1);
 
-  const restaurant = {
-    name: 'Restaurante Don Giovanni',
-    description: 'Cozinha italiana tradicional com toques contemporâneos',
-    address: 'Rua dos Pinheiros, 123 - Pinheiros, São Paulo - SP',
-    phone: '(11) 3456-7890',
-    hours: 'Ter-Dom: 12h-15h e 19h-23h',
-    instagram: '@dongiovanni',
-    facebook: 'dongiovanni',
-    website: 'www.dongiovanni.com.br'
-  };
+  const { slug } = useParams();
 
+  const restaurantBySlug = useMemo(() => ({
+    demo: {
+      name: 'Restaurante Don Giovanni',
+      description: 'Cozinha italiana tradicional com toques contemporâneos',
+      address: 'Rua dos Pinheiros, 123 - Pinheiros, São Paulo - SP',
+      phone: '(11) 3456-7890',
+      hours: 'Ter-Dom: 12h-15h e 19h-23h',
+      instagram: '@dongiovanni',
+      facebook: 'dongiovanni',
+      website: 'www.dongiovanni.com.br'
+    },
+    'sabor-da-vila': {
+      name: 'Sabor da Vila',
+      description: 'Comida brasileira caseira com ingredientes frescos',
+      address: 'Av. Brasil, 456 - Vila Mariana, São Paulo - SP',
+      phone: '(11) 3344-8899',
+      hours: 'Seg-Sáb: 11h-22h',
+      instagram: '@sabordavila',
+      facebook: 'sabordavila',
+      website: 'www.sabordavila.com.br'
+    }
+  }), []);
+
+  const safeSlug = slug || 'demo';
+  const restaurant = restaurantBySlug[safeSlug as keyof typeof restaurantBySlug] || restaurantBySlug.demo;
   const categories: Category[] = [
     {
       id: 1,
@@ -123,6 +140,14 @@ export function CardapioPublico({ isPreview }: CardapioPublicoProps) {
 
   const selectedCategoryData = categories.find(cat => cat.id === selectedCategory);
 
+  useEffect(() => {
+    setSelectedCategory(categories[0]?.id || 1);
+  }, [safeSlug]);
+
+  const instagramUrl = `https://instagram.com/${restaurant.instagram.replace('@', '')}`;
+  const facebookUrl = `https://facebook.com/${restaurant.facebook}`;
+  const websiteUrl = restaurant.website.startsWith('http') ? restaurant.website : `https://${restaurant.website}`;
+
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <div
@@ -164,15 +189,15 @@ export function CardapioPublico({ isPreview }: CardapioPublicoProps) {
           </div>
 
           <div className="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-[#E2E8F0]">
-            <a href="#" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
+            <a href={instagramUrl} target="_blank" rel="noreferrer" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
               <Instagram className="w-5 h-5" />
               <span className="text-sm">{restaurant.instagram}</span>
             </a>
-            <a href="#" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
+            <a href={facebookUrl} target="_blank" rel="noreferrer" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
               <Facebook className="w-5 h-5" />
               <span className="text-sm">{restaurant.facebook}</span>
             </a>
-            <a href="#" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
+            <a href={websiteUrl} target="_blank" rel="noreferrer" className="flex items-center space-x-2 text-[#64748B] hover:text-[#DC2626] transition-colors">
               <Globe className="w-5 h-5" />
               <span className="text-sm">{restaurant.website}</span>
             </a>

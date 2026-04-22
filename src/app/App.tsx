@@ -14,6 +14,7 @@ import { DadosRestaurante } from './pages/DadosRestaurante';
 import { QRCodePage } from './pages/QRCodePage';
 import { Preview } from './pages/Preview';
 import { CardapioPublico } from './pages/CardapioPublico';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 export default function App() {
   return (
@@ -25,17 +26,19 @@ export default function App() {
         <Route path="/recuperar-senha" element={<RecuperarSenha />} />
         <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/categorias" element={<Categorias />} />
-        <Route path="/dashboard/categorias/nova" element={<NovaCategoria />} />
-        <Route path="/dashboard/categorias/:id/editar" element={<NovaCategoria />} />
-        <Route path="/dashboard/pratos" element={<Pratos />} />
-        <Route path="/dashboard/pratos/novo" element={<NovoPrato />} />
-        <Route path="/dashboard/pratos/:id/editar" element={<NovoPrato />} />
-        <Route path="/dashboard/personalizar" element={<Personalizar />} />
-        <Route path="/dashboard/dados" element={<DadosRestaurante />} />
-        <Route path="/dashboard/qrcode" element={<QRCodePage />} />
-        <Route path="/dashboard/preview" element={<Preview />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/categorias" element={<Categorias />} />
+          <Route path="/dashboard/categorias/nova" element={<NovaCategoria />} />
+          <Route path="/dashboard/categorias/:id/editar" element={<NovaCategoria />} />
+          <Route path="/dashboard/pratos" element={<Pratos />} />
+          <Route path="/dashboard/pratos/novo" element={<NovoPrato />} />
+          <Route path="/dashboard/pratos/:id/editar" element={<NovoPrato />} />
+          <Route path="/dashboard/personalizar" element={<Personalizar />} />
+          <Route path="/dashboard/dados" element={<DadosRestaurante />} />
+          <Route path="/dashboard/qrcode" element={<QRCodePage />} />
+          <Route path="/dashboard/preview" element={<Preview />} />
+        </Route>
 
         <Route path="/cardapio/:slug" element={<CardapioPublico />} />
 

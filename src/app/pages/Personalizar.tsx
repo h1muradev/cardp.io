@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DashboardLayout } from '../components/DashboardLayout';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { Upload, Save, CheckCircle } from 'lucide-react';
+import { Upload, Save, CheckCircle, AlertCircle } from 'lucide-react';
+
+const BRANDING_STORAGE_KEY = 'cardapio:branding';
+const MAX_LOGO_SIZE_MB = 2;
+const MAX_BANNER_SIZE_MB = 5;
 
 export function Personalizar() {
   const [formData, setFormData] = useState({
@@ -14,29 +18,93 @@ export function Personalizar() {
 
   const [logoPreview, setLogoPreview] = useState<string>('');
   const [bannerPreview, setBannerPreview] = useState<string>('');
+  const [error, setError] = useState('');
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const raw = localStorage.getItem(BRANDING_STORAGE_KEY);
+    if (!raw) return;
+
+    try {
+      const savedData = JSON.parse(raw) as {
+        primaryColor: string;
+        secondaryColor: string;
+        logoPreview?: string;
+        bannerPreview?: string;
+      };
+      setFormData((prev) => ({
+        ...prev,
+        primaryColor: savedData.primaryColor || prev.primaryColor,
+        secondaryColor: savedData.secondaryColor || prev.secondaryColor
+      }));
+      setLogoPreview(savedData.logoPreview || '');
+      setBannerPreview(savedData.bannerPreview || '');
+    } catch {
+      localStorage.removeItem(BRANDING_STORAGE_KEY);
+    }
+  }, []);
+
+  const validateImage = (file: File, maxSizeMB: number) => {
+    if (!file.type.startsWith('image/')) {
+      return 'Selecione apenas arquivos de imagem.';
+    }
+
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      return `A imagem deve ter no máximo ${maxSizeMB}MB.`;
+    }
+
+    return '';
+  };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError('');
     const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, logo: file });
-      const reader = new FileReader();
-      reader.onloadend = () => setLogoPreview(reader.result as string);
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    const imageError = validateImage(file, MAX_LOGO_SIZE_MB);
+    if (imageError) {
+      setError(imageError);
+      return;
     }
+
+    setFormData({ ...formData, logo: file });
+    const reader = new FileReader();
+    reader.onloadend = () => setLogoPreview(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError('');
     const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, banner: file });
-      const reader = new FileReader();
-      reader.onloadend = () => setBannerPreview(reader.result as string);
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    const imageError = validateImage(file, MAX_BANNER_SIZE_MB);
+    if (imageError) {
+      setError(imageError);
+      return;
     }
+
+    setFormData({ ...formData, banner: file });
+    const reader = new FileReader();
+    reader.onloadend = () => setBannerPreview(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSaved(false);
+
+    localStorage.setItem(
+      BRANDING_STORAGE_KEY,
+      JSON.stringify({
+        primaryColor: formData.primaryColor,
+        secondaryColor: formData.secondaryColor,
+        logoPreview,
+        bannerPreview
+      })
+    );
+
+    setSaved(true);
   };
 
   return (
@@ -182,6 +250,17 @@ export function Personalizar() {
                   </p>
                 </div>
               </Card>
+
+              {error && (
+                <p className="text-sm text-[#DC2626] mb-4 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" /> {error}
+                </p>
+              )}
+              {saved && (
+                <p className="text-sm text-[#16A34A] mb-4 flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4" /> Personalização salva com sucesso.
+                </p>
+              )}
 
               <div className="flex items-center justify-end">
                 <Button type="submit" variant="primary">
